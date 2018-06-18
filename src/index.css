@@ -6,6 +6,16 @@ body {
 
 table {
     margin: auto;
+    /*animation: 1s flip infinite;*/
+}
+
+@keyframes flip {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(180deg);
+    }
 }
 
 table tr, th {

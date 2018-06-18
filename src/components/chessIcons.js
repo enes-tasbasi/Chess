@@ -3,7 +3,7 @@ import React from 'react';
 
 class IconMaker extends React.Component {
     handleClick() {
-        console.log('test...');
+       // console.log('test...');
     }
     render() {
         return (

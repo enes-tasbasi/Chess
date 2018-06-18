@@ -8,106 +8,111 @@ class Board extends React.Component {
 
         this.state = {
             board: {
-                rank8: {
-                    1: "blackRook",
-                    2: "blackBishop",
-                    3: "blackKnight",
-                    4: "blackQueen",
-                    5: "blackKing",
-                    6: "blackKnight",
-                    7: "blackBishop",
-                    8: "blackRook",
+                8: {
+                    a: "blackRook",
+                    b: "blackBishop",
+                    c: "blackKnight",
+                    d: "blackQueen",
+                    e: "blackKing",
+                    f: "blackKnight",
+                    g: "blackBishop",
+                    h: "blackRook",
                 },
-                rank7: {
-                    1: "blackPawn",
-                    2: "blackPawn",
-                    3: "blackPawn",
-                    4: "blackPawn",
-                    5: "blackPawn",
-                    6: "blackPawn",
-                    7: "blackPawn",
-                    8: "blackPawn",
+                7: {
+                    a: "blackPawn",
+                    b: "blackPawn",
+                    c: "blackPawn",
+                    d: "blackPawn",
+                    e: "blackPawn",
+                    f: "blackPawn",
+                    g: "blackPawn",
+                    h: "blackPawn",
                 },
-                rank6: {
-                    1: "",
-                    2: "",
-                    3: "",
-                    4: "",
-                    5: "",
-                    6: "",
-                    7: "",
-                    8: "",
+                6: {
+                    a: "",
+                    b: "",
+                    c: "",
+                    d: "",
+                    e: "",
+                    f: "",
+                    g: "",
+                    h: "",
                 },
-                rank5: {
-                    1: "",
-                    2: "",
-                    3: "",
-                    4: "",
-                    5: "",
-                    6: "",
-                    7: "",
-                    8: "",
+                5: {
+                    a: "",
+                    b: "",
+                    c: "",
+                    d: "",
+                    e: "",
+                    f: "",
+                    g: "",
+                    h: "",
                 },
-                rank4: {
-                    1: "",
-                    2: "",
-                    3: "",
-                    4: "",
-                    5: "",
-                    6: "",
-                    7: "",
-                    8: "",
+                4: {
+                    a: "",
+                    b: "",
+                    c: "",
+                    d: "",
+                    e: "",
+                    f: "",
+                    g: "",
+                    h: "",
                 },
-                rank3: {
-                    1: "",
-                    2: "",
-                    3: "",
-                    4: "",
-                    5: "",
-                    6: "",
-                    7: "",
-                    8: "",
+                3: {
+                    a: "",
+                    b: "",
+                    c: "",
+                    d: "",
+                    e: "",
+                    f: "",
+                    g: "",
+                    h: "",
                 },
-                rank2: {
-                    1: "whitePawn",
-                    2: "whitePawn",
-                    3: "whitePawn",
-                    4: "whitePawn",
-                    5: "whitePawn",
-                    6: "whitePawn",
-                    7: "whitePawn",
-                    8: "whitePawn",
+                2: {
+                    a: "whitePawn",
+                    b: "whitePawn",
+                    c: "whitePawn",
+                    d: "whitePawn",
+                    e: "whitePawn",
+                    f: "whitePawn",
+                    g: "whitePawn",
+                    h: "whitePawn",
                 },
-                rank1: {
-                    1: "whiteRook",
-                    2: "whiteBishop",
-                    3: "whiteKnight",
-                    4: "whiteQueen",
-                    5: "whiteKing",
-                    6: "whiteKnight",
-                    7: "whiteBishop",
-                    8: "whiteRook",
+                1: {
+                    a: "whiteRook",
+                    b: "whiteBishop",
+                    c: "whiteKnight",
+                    d: "whiteQueen",
+                    e: "whiteKing",
+                    f: "whiteKnight",
+                    g: "whiteBishop",
+                    h: "whiteRook",
                 }
             }
-            // board : {
-            // a1: "whiteRook",
-            // a2: "whiteBishop",
-            // a3: "whiteKnight",
-            // a4: "whiteQueen",
-            // a5: "whiteKing",
-            // a6: "whiteKnight",
-            // a7: "whiteBishop",
-            // a8: "whiteRook",
-            // b1: "whitePawn",
-            // b2: "whitePawn",
-            // b3: "whitePawn",
-            // b4: "whitePawn",
-            // b5: "whitePawn",
-            // b6: "whitePawn",
-            // b7: "whitePawn",
-            // b8: "whitePawn",
-            // }
-        }
+
+        };
+
+        this.handleClick = this.handleClick.bind(this);
+    }
+
+    handleClick(event) {
+
+        let pieceToMove = event.target.id ? event.target.id : event.target.parentElement.id;
+
+        let tempArr = pieceToMove.split('');
+        let rank = tempArr[0];
+        let file = tempArr[1];
+        let tempPiece = this.state.board[rank];
+        tempPiece = tempPiece[file];
+        console.log(tempPiece);
+
+
+        let tempBoard = this.state.board;
+        let tempRank = tempBoard[parseInt(rank) + 1];
+        tempRank[file] = tempPiece;
+        tempBoard[parseInt(rank) + 1] = tempRank;
+        this.setState({ board: tempBoard });
+
     }
 
     render() {
@@ -121,14 +126,14 @@ class Board extends React.Component {
 
                         return (
                             <tr>
-                                <th className="square"><Icon iconName={eachRank["1"]}/></th>
-                                <th className="square"><Icon iconName={eachRank["2"]}/></th>
-                                <th className="square"><Icon iconName={eachRank["3"]}/></th>
-                                <th className="square"><Icon iconName={eachRank["4"]}/></th>
-                                <th className="square"><Icon iconName={eachRank["5"]}/></th>
-                                <th className="square"><Icon iconName={eachRank["6"]}/></th>
-                                <th className="square"><Icon iconName={eachRank["7"]}/></th>
-                                <th className="square"><Icon iconName={eachRank["8"]}/></th>
+                                <th ref={key + "a"} id={key + "a"} onClick={this.handleClick} className="square"><Icon iconName={eachRank["a"]}/></th>
+                                <th ref={key + "b"} id={key + "b"} onClick={this.handleClick} className="square"><Icon iconName={eachRank["b"]}/></th>
+                                <th ref={key + "c"} id={key + "c"} onClick={this.handleClick} className="square"><Icon iconName={eachRank["c"]}/></th>
+                                <th ref={key + "d"} id={key + "d"} onClick={this.handleClick} className="square"><Icon iconName={eachRank["d"]}/></th>
+                                <th ref={key + "e"} id={key + "e"} onClick={this.handleClick} className="square"><Icon iconName={eachRank["e"]}/></th>
+                                <th ref={key + "f"} id={key + "f"} onClick={this.handleClick} className="square"><Icon iconName={eachRank["f"]}/></th>
+                                <th ref={key + "g"} id={key + "g"} onClick={this.handleClick} className="square"><Icon iconName={eachRank["g"]}/></th>
+                                <th ref={key + "h"} id={key + "h"} onClick={this.handleClick} className="square"><Icon iconName={eachRank["h"]}/></th>
                             </tr>
                         )
                     })}
