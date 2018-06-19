@@ -2,6 +2,34 @@ import React from 'react';
 
 import Icon from './chessIcons';
 
+function getAPiece(board, rank, file) {
+    let upper = board[rank];
+    return upper[file];
+}
+
+function moveAPiece(pieceToMove, board) {
+    debugger;
+
+    let pieceInfo = pieceToMove.split('');
+    let rank = pieceInfo[0];
+    let file = pieceInfo[1];
+
+    let activePiece = getAPiece(board, rank, file);
+
+    if(activePiece === "") {
+        return board;
+    }
+
+    let tempBoard = board;
+    let tempRank = tempBoard[parseInt(rank) + 1];
+    tempRank[file] = activePiece;
+    let emptyPastSquare = tempBoard[parseInt(rank)];
+    emptyPastSquare[file] = "";
+
+    return tempBoard;
+
+}
+
 class Board extends React.Component {
     constructor(props) {
         super(props);
@@ -99,18 +127,22 @@ class Board extends React.Component {
 
         let pieceToMove = event.target.id ? event.target.id : event.target.parentElement.id;
 
-        let tempArr = pieceToMove.split('');
-        let rank = tempArr[0];
-        let file = tempArr[1];
-        let tempPiece = this.state.board[rank];
-        tempPiece = tempPiece[file];
-        console.log(tempPiece);
+        // let tempArr = pieceToMove.split('');
+        // let rank = tempArr[0];
+        // let file = tempArr[1];
+        // let tempPiece = this.state.board[rank];
+        // tempPiece = tempPiece[file];
+
+        // let tempPiece = getAPiece(this.state.board, parseInt(rank), file);
+        // console.log(tempPiece);
 
 
-        let tempBoard = this.state.board;
-        let tempRank = tempBoard[parseInt(rank) + 1];
-        tempRank[file] = tempPiece;
-        tempBoard[parseInt(rank) + 1] = tempRank;
+        // let tempBoard = this.state.board;
+        // let tempRank = tempBoard[parseInt(rank) + 1];
+        // tempRank[file] = tempPiece;
+        // tempBoard[parseInt(rank) + 1] = getAPiece(this.state.board, parseInt(rank) + 1, file);
+
+        let tempBoard = moveAPiece(pieceToMove, this.state.board);
         this.setState({ board: tempBoard });
 
     }
