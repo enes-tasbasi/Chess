@@ -4,6 +4,24 @@ body {
     font-family: sans-serif;
 }
 
+.menu {
+    margin: 20px;
+    position: absolute;
+    background: #33b392;
+    padding: 40px 40px 80px 40px;
+}
+
+.menu input {
+    height: 30px;
+}
+
+.menu button {
+    margin-top: 5px;
+    display: block;
+    width: 173px;
+    height: 30px;
+}
+
 table {
     margin: auto;
     /*animation: 1s flip infinite;*/
