@@ -1,6 +1,6 @@
 import React from 'react';
 import Icon from './chessIcons';
-import FEN, {Menu} from './menu';
+import {Menu} from './menu';
 
 import Chess from "chess.js";
 
@@ -8,10 +8,10 @@ let chess = new Chess();
 
 // loads the board with the passed fen. Reads each object one by one to convert them to the 'whiteRook' format
 function loadBoard(object, fen) {
- //   debugger;
+    //   debugger;
     let modifiedBoard = {};
 
-    if (fen !== "") {
+    if (!fen || fen !== "") {
         chess.load(fen);
     }
 
@@ -185,7 +185,7 @@ class Board extends React.Component {
 
         this.state = {
             boardBluePrint: defaultBoard,
-            board: loadBoard(defaultBoard, FEN)
+            board: loadBoard(defaultBoard, "")
 
         };
 
@@ -205,13 +205,13 @@ class Board extends React.Component {
 
     // this func calls loadBoard and passes the fen argument that is passed from menu.js
     refreshBoard(fen) {
-        this.setState({ board: loadBoard(this.state.boardBluePrint, fen)});
+        this.setState({board: loadBoard(this.state.boardBluePrint, fen)});
     }
 
     render() {
         return (
             <div className="container">
-                <Menu refreshBoard={this.refreshBoard} />
+                <Menu refreshBoard={this.refreshBoard}/>
                 <table>
 
                     {Object.keys(this.state.board).map((key) => {
