@@ -3,16 +3,100 @@ import Icon from './chessIcons';
 import {Menu} from './menu';
 
 import Chess from "chess.js";
+import $ from 'jquery';
 
 let chess = new Chess();
 
+let defaultBoard = {
+    "8": {
+        a: "",
+        b: "",
+        c: "",
+        d: "",
+        e: "",
+        f: "",
+        g: "",
+        h: "",
+    },
+    "7": {
+        a: "",
+        b: "",
+        c: "",
+        d: "",
+        e: "",
+        f: "",
+        g: "",
+        h: "",
+    },
+    "6": {
+        a: "",
+        b: "",
+        c: "",
+        d: "",
+        e: "",
+        f: "",
+        g: "",
+        h: "",
+    },
+    "5": {
+        a: "",
+        b: "",
+        c: "",
+        d: "",
+        e: "",
+        f: "",
+        g: "",
+        h: "",
+    },
+    "4": {
+        a: "",
+        b: "",
+        c: "",
+        d: "",
+        e: "",
+        f: "",
+        g: "",
+        h: "",
+    },
+    "3": {
+        a: "",
+        b: "",
+        c: "",
+        d: "",
+        e: "",
+        f: "",
+        g: "",
+        h: "",
+    },
+    "2": {
+        a: "",
+        b: "",
+        c: "",
+        d: "",
+        e: "",
+        f: "",
+        g: "",
+        h: "",
+    },
+    "1": {
+        a: "",
+        b: "",
+        c: "",
+        d: "",
+        e: "",
+        f: "",
+        g: "",
+        h: "",
+    }
+};
+
 // loads the board with the passed fen. Reads each object one by one to convert them to the 'whiteRook' format
 function loadBoard(object, fen) {
-    //   debugger;
     let modifiedBoard = {};
 
-    if (!fen || fen !== "") {
+    if(fen !== undefined) {
         chess.load(fen);
+        console.log(chess.ascii());
     }
 
     Object.keys(object).map((key) => {
@@ -69,119 +153,32 @@ function getAPiece(board, rank, file) {
     return upper[file];
 }
 
-function moveAPiece(pieceToMove, board) {
+function moveAPiece(board) {
     //debugger;
 
-    let pieceInfo = pieceToMove.split('');
-    let rank = pieceInfo[1];
-    let file = pieceInfo[0];
+    // let pieceInfo = pieceToMove.split('');
+    // let rank = pieceInfo[1];
+    // let file = pieceInfo[0];
+    //
+    // let activePiece = getAPiece(board, rank, file);
+    //
+    // if (activePiece === "") {
+    //     return board;
+    // }
+    //
+    // let tempBoard = board;
+    // let tempRank = tempBoard[parseInt(rank) + 1];
+    // tempRank[file] = activePiece;
+    // let emptyPastSquare = tempBoard[parseInt(rank)];
+    // emptyPastSquare[file] = "";
 
-    let activePiece = getAPiece(board, rank, file);
-
-    if (activePiece === "") {
-        return board;
-    }
-
-    let tempBoard = board;
-    let tempRank = tempBoard[parseInt(rank) + 1];
-    tempRank[file] = activePiece;
-    let emptyPastSquare = tempBoard[parseInt(rank)];
-    emptyPastSquare[file] = "";
-
-    //let chess = new Chess();
-
-    // console.log(chess.board());
-
-    return tempBoard;
+    return loadBoard(board);
 
 }
 
 class Board extends React.Component {
     constructor(props) {
         super(props);
-
-        let defaultBoard = {
-            "8": {
-                a: "",
-                b: "",
-                c: "",
-                d: "",
-                e: "",
-                f: "",
-                g: "",
-                h: "",
-            },
-            "7": {
-                a: "",
-                b: "",
-                c: "",
-                d: "",
-                e: "",
-                f: "",
-                g: "",
-                h: "",
-            },
-            "6": {
-                a: "",
-                b: "",
-                c: "",
-                d: "",
-                e: "",
-                f: "",
-                g: "",
-                h: "",
-            },
-            "5": {
-                a: "",
-                b: "",
-                c: "",
-                d: "",
-                e: "",
-                f: "",
-                g: "",
-                h: "",
-            },
-            "4": {
-                a: "",
-                b: "",
-                c: "",
-                d: "",
-                e: "",
-                f: "",
-                g: "",
-                h: "",
-            },
-            "3": {
-                a: "",
-                b: "",
-                c: "",
-                d: "",
-                e: "",
-                f: "",
-                g: "",
-                h: "",
-            },
-            "2": {
-                a: "",
-                b: "",
-                c: "",
-                d: "",
-                e: "",
-                f: "",
-                g: "",
-                h: "",
-            },
-            "1": {
-                a: "",
-                b: "",
-                c: "",
-                d: "",
-                e: "",
-                f: "",
-                g: "",
-                h: "",
-            }
-        };
 
         this.state = {
             boardBluePrint: defaultBoard,
@@ -193,19 +190,38 @@ class Board extends React.Component {
         this.refreshBoard = this.refreshBoard.bind(this);
     }
 
-
+    // handles the click event from the rendered board
     handleClick(event) {
 
         let pieceToMove = event.target.id ? event.target.id : event.target.parentElement.id;
+        let badChars = ['R', 'B', 'Q', 'K', 'N'];
 
-        let tempBoard = moveAPiece(pieceToMove, this.state.board);
+       // console.log(chess.moves({square: pieceToMove}));
+
+
+        let moves = chess.moves({square: pieceToMove});
+         //debugger;
+        for(let i = 0; i < moves.length; i++) {
+            for(let a = 0; a < badChars.length; a++) {
+                if(moves[i].indexOf(badChars[a] > -1)) {
+                    moves[i] = moves[i].replace(badChars[a], '');
+                    console.log(moves[i]);
+                }
+            }
+
+            $('#' + moves[i]).css('box-shadow', 'inset 0 0 0 1000px rgba(0,0,0,.3)');
+        }
+
+       // chess.move('d4');
+
+        let tempBoard = loadBoard(defaultBoard);
         this.setState({board: tempBoard});
 
     }
 
     // this func calls loadBoard and passes the fen argument that is passed from menu.js
     refreshBoard(fen) {
-        this.setState({board: loadBoard(this.state.boardBluePrint, fen)});
+        this.setState({board: loadBoard(defaultBoard, fen)});
     }
 
     render() {

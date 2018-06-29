@@ -52,7 +52,7 @@ body {
 }
 
 .closeDiv.closed {
-    position: absolute;
+    position: fixed;
     left: 10px;
     top: 22px;
     background-color: #53b39a;
@@ -66,13 +66,15 @@ body {
 }
 
 .menu input {
-    height: 30px;
+    width: 87%;
+    height: 22px;
+    font-size: 15px;
 }
 
 .menu button {
     margin-top: 5px;
     display: block;
-    width: 173px;
+    width: 89.5%;
     height: 30px;
 }
 

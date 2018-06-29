@@ -14,6 +14,7 @@ export class Menu extends React.Component {
 
     handleClick() {
         FEN = this.refs.input.value;
+
         this.props.refreshBoard(FEN);
     }
 
