@@ -196,11 +196,8 @@ class Board extends React.Component {
         let pieceToMove = event.target.id ? event.target.id : event.target.parentElement.id;
         let badChars = ['R', 'B', 'Q', 'K', 'N'];
 
-       // console.log(chess.moves({square: pieceToMove}));
-
 
         let moves = chess.moves({square: pieceToMove});
-         //debugger;
         for(let i = 0; i < moves.length; i++) {
             for(let a = 0; a < badChars.length; a++) {
                 if(moves[i].indexOf(badChars[a] > -1)) {
