@@ -94,7 +94,7 @@ let defaultBoard = {
 function loadBoard(object, fen) {
     let modifiedBoard = {};
 
-    if(fen !== undefined) {
+    if (fen !== undefined) {
         chess.load(fen);
         console.log(chess.ascii());
     }
@@ -181,9 +181,9 @@ class Board extends React.Component {
         super(props);
 
         this.state = {
-            boardBluePrint: defaultBoard,
-            board: loadBoard(defaultBoard, "")
-
+            board: loadBoard(defaultBoard, ""),
+            highlightedSquares: [],
+            activePiece: ""
         };
 
         this.handleClick = this.handleClick.bind(this);
@@ -193,24 +193,63 @@ class Board extends React.Component {
     // handles the click event from the rendered board
     handleClick(event) {
 
+        //debugger;
         let pieceToMove = event.target.id ? event.target.id : event.target.parentElement.id;
         let badChars = ['R', 'B', 'Q', 'K', 'N'];
-
-
         let moves = chess.moves({square: pieceToMove});
-        for(let i = 0; i < moves.length; i++) {
-            for(let a = 0; a < badChars.length; a++) {
-                if(moves[i].indexOf(badChars[a] > -1)) {
+        this.setState({currentMoves: moves});
+
+        getAPiece(this.state.board, pieceToMove.split('')[1], pieceToMove.split('')[0]);
+
+        let piece = "";
+        try {
+
+            let piece = chess.get(pieceToMove).type.toUpperCase();
+            if (piece !== 'P') {
+                this.setState({activePiece: piece});
+            } else {
+                this.setState({activePiece: ""});
+            }
+
+
+        }
+        catch
+            (e) {
+            console.log(e);
+        }
+
+        // check if any squares are highlighted and if the user pressed one of the highlighted squares, so a can be made
+        if (this.state.highlightedSquares.length > 0) {
+
+            for (let i = 0; i < this.state.highlightedSquares.length; i++) {
+                if (pieceToMove === this.state.highlightedSquares[i]) {
+                    chess.move(this.state.activePiece + this.state.highlightedSquares[i]);
+                    this.setState({board: loadBoard(defaultBoard)});
+                }
+                $('#' + this.state.highlightedSquares[i]).css('box-shadow', 'none');
+
+            }
+
+        }
+
+        // if the move is in this format 'Nf3' replace the 'N' with ''
+        for (let i = 0; i < moves.length; i++) {
+            for (let a = 0; a < badChars.length; a++) {
+                if (moves[i].indexOf(badChars[a] > -1)) {
                     moves[i] = moves[i].replace(badChars[a], '');
-                    console.log(moves[i]);
                 }
             }
 
-            $('#' + moves[i]).css('box-shadow', 'inset 0 0 0 1000px rgba(0,0,0,.3)');
+            //style the box so the user can see which moves can be made
+            $('#' + moves[i]).css('box-shadow', 'inset 0 0 0 1000px rgba(0,240,0,.3)');
         }
 
-       // chess.move('d4');
+        // store the currently highlighted squares as state so it can be used in the future
+        this.setState({highlightedSquares: moves});
 
+        // chess.move('d4');
+
+        // refresh the board after changes
         let tempBoard = loadBoard(defaultBoard);
         this.setState({board: tempBoard});
 
@@ -263,7 +302,8 @@ class Board extends React.Component {
 
                         return (
                             <tr>
-                                <th id={"a" + key} onClick={this.handleClick} className="square"><Icon
+                                <th style={{boxShadow: 'none'}} id={"a" + key} onClick={this.handleClick}
+                                    className="square"><Icon
                                     iconName={eachRank["a"]}/></th>
                                 <th id={"b" + key} onClick={this.handleClick} className="square"><Icon
                                     iconName={eachRank["b"]}/></th>

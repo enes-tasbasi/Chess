@@ -6,7 +6,7 @@ export class Menu extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {menuIsOpen: true, menuClassName: "menu"};
+        this.state = {menuIsOpen: false, menuClassName: "menu"};
 
         this.handleClick = this.handleClick.bind(this);
         this.changeMenu = this.changeMenu.bind(this);
