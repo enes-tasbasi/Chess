@@ -7,6 +7,7 @@ import $ from 'jquery';
 
 let chess = new Chess();
 
+// use this object as a blueprint of this.state.board
 let defaultBoard = {
     "8": {
         a: "",
@@ -181,9 +182,11 @@ class Board extends React.Component {
 
         this.state = {
             board: loadBoard(defaultBoard, ""),
-            highlightedSquares: [],
             activePiece: "",
-            currentMoves: []
+            currentMoves: {
+                clean: [],
+                default: []
+            }
         };
 
         this.handleClick = this.handleClick.bind(this);
@@ -195,9 +198,8 @@ class Board extends React.Component {
 
         //debugger;
         let pieceToMove = event.target.id ? event.target.id : event.target.parentElement.id;
-        let badChars = ['R', 'B', 'Q', 'K', 'N', 'x', '+', '#'];
+        let badChars = ['R', 'B', 'Q', 'K', 'N', '+', '#'];
         let moves = chess.moves({square: pieceToMove});
-        console.log(moves);
 
 
         // save the active piece to the state so it can be used later on ( save it as "" if its a "P" [pawn] )
@@ -205,46 +207,71 @@ class Board extends React.Component {
         if (chess.get(pieceToMove)) {
             piece = chess.get(pieceToMove).type.toUpperCase();
         }
+        // this.setState({activePiece: piece});
+
         if (piece !== 'P') {
             this.setState({activePiece: piece});
         } else {
             this.setState({activePiece: ""});
         }
 
-
+        let tempCleanMoves = this.state.currentMoves.clean;
         // check if any squares are highlighted and if the user pressed one of the highlighted squares, so a move can be made
-        if (this.state.highlightedSquares.length > 0) {
+        if (tempCleanMoves.length > 0) {
 
-            for (let i = 0; i < this.state.highlightedSquares.length; i++) {
-                if (pieceToMove === this.state.highlightedSquares[i]) {
-                    let moveString = this.state.activePiece + this.state.highlightedSquares[i];
-                    if(this.state.currentMoves[i].indexOf('x') > -1) {
-                        moveString = this.state.activePiece + 'x' + this.state.highlightedSquares[i];
+
+            for (let i = 0; i < tempCleanMoves.length; i++) {
+                if (pieceToMove === tempCleanMoves[i]) {
+                    let moveString = this.state.activePiece + tempCleanMoves[i];
+                    if (this.state.currentMoves.default[i].indexOf('x') > -1) {
+                        if (this.state.activePiece === "") {
+                            moveString = this.state.currentMoves.default[i].charAt(0) + 'x' + this.state.currentMoves.clean[i];
+                        } else {
+                            moveString = this.state.activePiece + 'x' + this.state.currentMoves.clean[i];
+
+                        }
+                        console.log(moveString);
                     }
-                    chess.move(moveString);
+                    chess.move(moveString, {sloppy: true});
                     this.setState({board: loadBoard(defaultBoard)});
                 }
-                $('#' + this.state.highlightedSquares[i]).css('box-shadow', 'none');
-                this.setState({currentMoves: []});
+                $('#' + tempCleanMoves[i]).css('box-shadow', 'none');
+                //this.setState({currentMoves: []});
             }
 
         }
 
+
+        // TODO: fix the issue where if the moves is like exd5 it becomes ed5 supposed to be d5 only
         // if the move is in this format 'Nf3' replace the 'N' with ''
-        for (let i = 0; i < moves.length; i++) {
+        for (let z = 0; z < moves.length; z++) {
+            switch (moves[z].indexOf('x')) {
+                case 1:
+                    let charToRemove = moves[z].charAt(0);
+                    moves[z] = moves[z].replace(charToRemove, '');
+                    moves[z] = moves[z].replace('x', '');
+                    break;
+                default:
+                    moves[z] = moves[z].replace('x', '');
+            }
             for (let a = 0; a < badChars.length; a++) {
-                if (moves[i].indexOf(badChars[a] > -1)) {
-                    moves[i] = moves[i].replace(badChars[a], '');
+
+                if (moves[z].indexOf(badChars[a] > -1)) {
+                    moves[z] = moves[z].replace(badChars[a], '');
                 }
             }
 
             //style the box so the user can see which moves can be made
-            $('#' + moves[i]).css('box-shadow', 'inset 0 0 0 1000px rgba(0,240,0,.3)');
-            this.setState({currentMoves: chess.moves({square: pieceToMove})});
+            $('#' + moves[z]).css('box-shadow', 'inset 0 0 0 1000px rgba(0,240,0,.3)');
+            let tempDefaultMoves = this.state.currentMoves;
+            tempDefaultMoves.default = chess.moves({square: pieceToMove});
+            this.setState({currentMoves: tempDefaultMoves});
         }
 
         // store the currently highlighted squares as state so it can be used in the future
-        this.setState({highlightedSquares: moves});
+        let tempObj = this.state.currentMoves;
+        tempObj.clean = moves;
+        this.setState({currentMoves: tempObj});
 
 
         // refresh the board after changes
