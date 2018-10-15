@@ -4,6 +4,7 @@ import {Menu} from './menu';
 
 import Chess from "chess.js";
 import $ from 'jquery';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 let chess = new Chess();
 
@@ -242,7 +243,6 @@ class Board extends React.Component {
         }
 
 
-        // TODO: fix the issue where if the moves is like exd5 it becomes ed5 supposed to be d5 only
         // if the move is in this format 'Nf3' replace the 'N' with ''
         for (let z = 0; z < moves.length; z++) {
             switch (moves[z].indexOf('x')) {
@@ -286,72 +286,80 @@ class Board extends React.Component {
     }
 
     render() {
+
+        const transitionOptions = {
+            transitionName: 'fade',
+            transitionEnterTimeout: 500,
+            transitionLeaveTimeout: 500,
+        };
+
         return (
             <div className="container">
                 <Menu refreshBoard={this.refreshBoard}/>
                 <table>
+                    <ReactCSSTransitionGroup {...transitionOptions}>
+                        {Object.keys(this.state.board).map((key) => {
 
-                    {Object.keys(this.state.board).map((key) => {
 
+                            // Use switch to flip the board, otherwise the player will be facing black
+                            // this is probably a bad way of doing it.
+                            switch (key) {
+                                case "1":
+                                    key = "8";
+                                    break;
+                                case "2":
+                                    key = "7";
+                                    break;
+                                case "3":
+                                    key = "6";
+                                    break;
+                                case "4":
+                                    key = "5";
+                                    break;
+                                case "5":
+                                    key = "4";
+                                    break;
+                                case "6":
+                                    key = "3";
+                                    break;
+                                case "7":
+                                    key = "2";
+                                    break;
+                                case "8":
+                                    key = "1";
+                                    break;
+                            }
 
-                        // Use switch to flip the board, otherwise the player will be facing black
-                        // this is probably a bad way of doing it.
-                        switch (key) {
-                            case "1":
-                                key = "8";
-                                break;
-                            case "2":
-                                key = "7";
-                                break;
-                            case "3":
-                                key = "6";
-                                break;
-                            case "4":
-                                key = "5";
-                                break;
-                            case "5":
-                                key = "4";
-                                break;
-                            case "6":
-                                key = "3";
-                                break;
-                            case "7":
-                                key = "2";
-                                break;
-                            case "8":
-                                key = "1";
-                                break;
-                        }
+                            let eachRank = this.state.board[key];
 
-                        let eachRank = this.state.board[key];
-
-                        return (
-                            <tr>
-                                <th style={{boxShadow: 'none'}} id={"a" + key} onClick={this.handleClick}
-                                    className="square"><Icon
-                                    iconName={eachRank["a"]}/></th>
-                                <th id={"b" + key} onClick={this.handleClick} className="square"><Icon
-                                    iconName={eachRank["b"]}/></th>
-                                <th id={"c" + key} onClick={this.handleClick} className="square"><Icon
-                                    iconName={eachRank["c"]}/></th>
-                                <th id={"d" + key} onClick={this.handleClick} className="square"><Icon
-                                    iconName={eachRank["d"]}/></th>
-                                <th id={"e" + key} onClick={this.handleClick} className="square"><Icon
-                                    iconName={eachRank["e"]}/></th>
-                                <th id={"f" + key} onClick={this.handleClick} className="square"><Icon
-                                    iconName={eachRank["f"]}/></th>
-                                <th id={"g" + key} onClick={this.handleClick} className="square"><Icon
-                                    iconName={eachRank["g"]}/></th>
-                                <th id={"h" + key} onClick={this.handleClick} className="square"><Icon
-                                    iconName={eachRank["h"]}/></th>
-                            </tr>
-                        )
-                    })}
+                            return (
+                                <tr>
+                                    <th style={{boxShadow: 'none'}} id={"a" + key} onClick={this.handleClick}
+                                        className="square"><Icon
+                                        iconName={eachRank["a"]}/></th>
+                                    <th id={"b" + key} onClick={this.handleClick} className="square"><Icon
+                                        iconName={eachRank["b"]}/></th>
+                                    <th id={"c" + key} onClick={this.handleClick} className="square"><Icon
+                                        iconName={eachRank["c"]}/></th>
+                                    <th id={"d" + key} onClick={this.handleClick} className="square"><Icon
+                                        iconName={eachRank["d"]}/></th>
+                                    <th id={"e" + key} onClick={this.handleClick} className="square"><Icon
+                                        iconName={eachRank["e"]}/></th>
+                                    <th id={"f" + key} onClick={this.handleClick} className="square"><Icon
+                                        iconName={eachRank["f"]}/></th>
+                                    <th id={"g" + key} onClick={this.handleClick} className="square"><Icon
+                                        iconName={eachRank["g"]}/></th>
+                                    <th id={"h" + key} onClick={this.handleClick} className="square"><Icon
+                                        iconName={eachRank["h"]}/></th>
+                                </tr>
+                            )
+                        })}
+                    </ReactCSSTransitionGroup>
 
                 </table>
             </div>
-        )
+    )
     }
-}
+    }
 
-export default Board;
+    export default Board;

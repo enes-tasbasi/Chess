@@ -125,3 +125,12 @@ table tr:nth-child(odd) .square:nth-child(even) {
 
 /*==========Board End===========*/
 
+.fade-enter {
+    opacity: 0;
+}
+
+.fade-enter-active {
+    opacity: 1;
+    transition: .5s ease-in all;
+}
+
